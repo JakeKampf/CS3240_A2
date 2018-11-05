@@ -1,31 +1,30 @@
- /* An implementation of stack using doubly linked list */
-
 #include <stdlib.h>
-#include <stdio.h>
-
-struct QNode 
+#include <stdio.h> 
+#include <dirent.h> 
+#include <sys/param.h>
+#include "apue.h"
+#include "error.c"
+//Tanner's error, when concatinating path, concatinate the path and the slash
+struct Node 
 { 
-    char * key; 
-    struct QNode *next; 
+    char * element; 
+    struct Node *next; 
 }; 
   
-// The queue, front stores the front node of LL and rear stores ths 
-// last node of LL 
 struct Queue 
 { 
-    struct QNode *front, *rear; 
+    int size;
+    struct Node *front, *rear; 
 }; 
   
-// A utility function to create a new linked list node. 
-struct QNode* newNode(char * k) 
+struct Node* newNode(char * element) 
 { 
-    struct QNode *temp = (struct QNode*)malloc(sizeof(struct QNode)); 
-    temp->key = k; 
+    struct Node *temp = (struct Node*)malloc(sizeof(struct Node)); 
+    temp->element = element; 
     temp->next = NULL; 
     return temp;  
 } 
   
-// A utility function to create an empty queue 
 struct Queue *createQueue() 
 { 
     struct Queue *q = (struct Queue*)malloc(sizeof(struct Queue)); 
@@ -33,52 +32,44 @@ struct Queue *createQueue()
     return q; 
 } 
   
-// The function to add a key k to q 
-void enQueue(struct Queue *q, char * k) 
+void enQueue(struct Queue *q, char * element) 
 { 
-    // Create a new LL node 
-    struct QNode *temp = newNode(k); 
+    struct Node *temp = newNode(element); 
   
-    // If queue is empty, then new node is front and rear both 
     if (q->rear == NULL) 
     { 
        q->front = q->rear = temp; 
        return; 
     } 
-  
-    // Add the new node at the end of queue and change rear 
+    q->size++;
     q->rear->next = temp; 
     q->rear = temp; 
 } 
   
-// Function to remove a key from given queue q 
-struct QNode *deQueue(struct Queue *q) 
+
+struct Node *deQueue(struct Queue *q) 
 { 
-    // If queue is empty, return NULL. 
     if (q->front == NULL) 
        return NULL; 
   
-    // Store previous front and move front one node ahead 
-    struct QNode *temp = q->front; 
+
+    struct Node *temp = q->front; 
     q->front = q->front->next; 
-  
-    // If front becomes NULL, then change rear also as NULL 
+    
     if (q->front == NULL) 
        q->rear = NULL; 
+
+       q->size--;
     return temp; 
 } 
+void buildQueue(char * input){
   
-// Driver Program to test anove functions 
-int main() 
+    
+}  
+int main(int argc, char** argv) 
 { 
-    struct Queue *q = createQueue(); 
-    enQueue(q, "10"); 
-    enQueue(q, "20"); 
-    enQueue(q, "30"); 
-    enQueue(q, "40"); 
-    enQueue(q, "50"); 
-    struct QNode *n = deQueue(q); 
-    if (n != NULL) 
-      printf("Dequeued item is %s\n", n->key); 
+    
+buildQueue(argv[1]);
+
     return 0; 
 }
