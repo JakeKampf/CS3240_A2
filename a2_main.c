@@ -1,84 +1,84 @@
  /* An implementation of stack using doubly linked list */
 
-
+#include <stdlib.h>
 #include <stdio.h>
 
-struct node {
-    int e;
-    struct node *prev;
-    struct node *next;
-};
-
-struct stack {
-    int size;
-    struct node *top;
-};
-
-int push(struct node *n, struct stack *s);
-int pop(struct stack *s);
-int peek(struct stack *s);
-int is_empty(struct stack *s);
-
-int main(int argc, char const *argv[]) {
-    struct stack s;
-    s.size = 0;
-    s.top = NULL;
-
-    struct node n1, n2, n3;
-    n1.e = 1;
-    n1.prev = n1.next = NULL;
-    n2.e = 2;
-    n2.prev = n2.next = NULL;
-    n3.e = 3;
-    n3.prev = n3.next = NULL;
-
-    printf("pushing %d\n", push(&n1, &s));
-    printf("pushing %d\n", push(&n2, &s));
-    printf("pushing %d\n", push(&n3, &s));
-
-    printf("top is %d\n", peek(&s));
-    printf("poping %d\n", pop(&s));
-    printf("top is %d\n", peek(&s));
-    printf("poping %d\n", pop(&s));
-    printf("top is %d\n", peek(&s));
-
-    return 0;
-}
-
-int is_empty(struct stack *s) {
-    return s -> size == 0;
-}
-
-int push(struct node *n, struct stack *s) {
-    if (is_empty(s)) {
-        s -> top = n;
-    } else {
-        (n -> prev) = s -> top;
-        (s -> top) -> next = n;
-        s -> top = n;
-    }
-    (s -> size)++;
-    return n -> e;
-}
-
-int pop(struct stack *s) {
-    if (is_empty(s)) {
-        return -1;
-    } else {
-        int temp = (s -> top) -> e;
-        s -> top = (s -> top) -> prev;
-        if (s -> top != NULL) { /* not the last node */
-            (s -> top) -> next = NULL;
-        }
-        (s -> size)--;
-        return temp;
-    }
-}
-
-int peek(struct stack *s) {
-    if (is_empty(s)) {
-        return -1;
-    } else {
-        return (s -> top) -> e;
-    }
+struct QNode 
+{ 
+    char * key; 
+    struct QNode *next; 
+}; 
+  
+// The queue, front stores the front node of LL and rear stores ths 
+// last node of LL 
+struct Queue 
+{ 
+    struct QNode *front, *rear; 
+}; 
+  
+// A utility function to create a new linked list node. 
+struct QNode* newNode(char * k) 
+{ 
+    struct QNode *temp = (struct QNode*)malloc(sizeof(struct QNode)); 
+    temp->key = k; 
+    temp->next = NULL; 
+    return temp;  
+} 
+  
+// A utility function to create an empty queue 
+struct Queue *createQueue() 
+{ 
+    struct Queue *q = (struct Queue*)malloc(sizeof(struct Queue)); 
+    q->front = q->rear = NULL; 
+    return q; 
+} 
+  
+// The function to add a key k to q 
+void enQueue(struct Queue *q, char * k) 
+{ 
+    // Create a new LL node 
+    struct QNode *temp = newNode(k); 
+  
+    // If queue is empty, then new node is front and rear both 
+    if (q->rear == NULL) 
+    { 
+       q->front = q->rear = temp; 
+       return; 
+    } 
+  
+    // Add the new node at the end of queue and change rear 
+    q->rear->next = temp; 
+    q->rear = temp; 
+} 
+  
+// Function to remove a key from given queue q 
+struct QNode *deQueue(struct Queue *q) 
+{ 
+    // If queue is empty, return NULL. 
+    if (q->front == NULL) 
+       return NULL; 
+  
+    // Store previous front and move front one node ahead 
+    struct QNode *temp = q->front; 
+    q->front = q->front->next; 
+  
+    // If front becomes NULL, then change rear also as NULL 
+    if (q->front == NULL) 
+       q->rear = NULL; 
+    return temp; 
+} 
+  
+// Driver Program to test anove functions 
+int main() 
+{ 
+    struct Queue *q = createQueue(); 
+    enQueue(q, "10"); 
+    enQueue(q, "20"); 
+    enQueue(q, "30"); 
+    enQueue(q, "40"); 
+    enQueue(q, "50"); 
+    struct QNode *n = deQueue(q); 
+    if (n != NULL) 
+      printf("Dequeued item is %s\n", n->key); 
+    return 0; 
 }
