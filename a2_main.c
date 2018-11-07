@@ -85,36 +85,67 @@ void checkType(struct Queue * q, char * input){
 //if regular file, print it out and move to the next
 struct stat	buf; 
 
-if (lstat(input, &buf) < 0) {
-			err_ret("lstat error");
+if (lstat(input, &buf) < 0) { 
+			//err_ret("lstat error\n");   			 
+
 		}
-		if (S_ISREG(buf.st_mode))
-			printf("%s\n",input);
-		else if (S_ISDIR(buf.st_mode)) 
-            enQueue(q,input);
-		else
+
+		if (S_ISREG(buf.st_mode)) {
+            
+			printf("FILE: %s\n",input); 
+        }
+
+		if (S_ISDIR(buf.st_mode) && strcmp(input,".")!=0 && strcmp(input,"..")!=0)  {   
+            printf("DIRECTORY: %s\n",input);   
+
+            enQueue(q,input); 
+        }
+
+		// else
 			
-		printf("** unknown mode **\n");
+		// printf("** unknown mode **\n"); 
+
 }
 void buildQueue(char * input)
 {
     //lstat determines if it is a file or a directory
     //open directory, explore all files in the directory, if another directory is found, add to queue, if 
     //if it is a regular file
-	// 
-	// char		*ptr;
+	// char		*ptr; 
+
     struct Queue * q = createQueue();
     DIR             *dp;
-    struct dirent   *dirp;   
+    struct dirent   *dirp;  
+    //char * buf=""; 
            if (input == NULL)
                err_quit("usage: ls directory_name");
-           if ((dp = opendir(input)) == NULL)
+           if ((dp = opendir(input)) == NULL){
                err_sys("can’t open %s", input);
-           while ((dirp = readdir(dp)) != NULL) 
-                checkType(q, dirp->d_name);
+           }
+           else if((dp = opendir(input))!= NULL){
+               if(chdir(input) == 0){ 
+                getcwd(input,sizeof(input));                
+                enQueue(q, input);
+               }
+           } 
+            
+           while (!isEmpty(q)) {
+                
+             if(q->size>1){   
+               dp = opendir(deQueue(q)->element); 
+               dirp = readdir(dp);
+             }
+                while((dirp = readdir(dp)) != NULL){
+                checkType(q, dirp->d_name); 
+                     
+                
+                   
+                }
+
+           }
                
      closedir(dp);
-		
+	 	
 		
 	
 }  
