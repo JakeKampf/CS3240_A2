@@ -86,7 +86,7 @@ void checkType(struct Queue * q, char * input){
 struct stat	buf; 
 
 if (lstat(input, &buf) < 0) { 
-			//err_ret("lstat error\n");   			 
+					 
 
 		}
 
@@ -101,9 +101,7 @@ if (lstat(input, &buf) < 0) {
             enQueue(q,input); 
         }
 
-		// else
-			
-		// printf("** unknown mode **\n"); 
+		
 
 }
 void buildQueue(char * input)
@@ -120,7 +118,7 @@ void buildQueue(char * input)
            if (input == NULL)
                err_quit("usage: ls directory_name");
            if ((dp = opendir(input)) == NULL){
-               err_sys("can’t open %s", input);
+               err_sys("can’t open %s, be sure to include '~/' at the beginning of your path.\n", input);
            }
            else if((dp = opendir(input))!= NULL){
                if(chdir(input) == 0){ 
@@ -131,15 +129,13 @@ void buildQueue(char * input)
             
            while (!isEmpty(q)) {
                 
-             if(q->size>1){   
+             if(q->size>=1){   
                dp = opendir(deQueue(q)->element); 
                dirp = readdir(dp);
              }
                 while((dirp = readdir(dp)) != NULL){
                 checkType(q, dirp->d_name); 
-                     
-                
-                   
+  
                 }
 
            }
